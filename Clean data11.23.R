@@ -3,6 +3,11 @@ library(readxl)
 library(dplyr)
 library(VIM)
 
+#Import the data txt named TraqqRaw, NEVO, SVT
+#clean the not used columns of the raw data from traqq
+Traqq <- select(TraqqRaw, -participantId,-invitationId,-invitationNotes,-startTime,-endTime,-openingTime,-closingTime,-responseCount,-responseId,-sendTime,-receiveTime,-manualSend,-deviceInfo,-appVersion,-timeZone,-ipHash,-consumptionCount,-consumptionId,-productId,-momentId,-momentName,-consumptionTime,-selectionTime,-collectionId,-collectionName)
+Traqq
+
 # Character conversion
 Traqq$nevoCode <- as.character(Traqq$nevoCode)
 SVT$NEVO_code <- as.character(SVT$NEVO_code)
