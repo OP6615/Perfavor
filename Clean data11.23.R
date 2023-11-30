@@ -4,6 +4,10 @@ library(dplyr)
 library(VIM)
 
 #Import the data txt named TraqqRaw, NEVO, SVT
+NEVO <- read.csv("https://raw.githubusercontent.com/OP6615/Perfavor/main/NEVO.csv")
+SVT <- read.csv("https://raw.githubusercontent.com/OP6615/Perfavor/main/SVT.csv")
+TraqqRaw <- read.csv("https://raw.githubusercontent.com/OP6615/Perfavor/main/TraqqRaw.csv")
+
 #clean the not used columns of the raw data from traqq
 Traqq <- select(TraqqRaw, -participantId,-invitationId,-invitationNotes,-startTime,-endTime,-openingTime,-closingTime,-responseCount,-responseId,-sendTime,-receiveTime,-manualSend,-deviceInfo,-appVersion,-timeZone,-ipHash,-consumptionCount,-consumptionId,-productId,-momentId,-momentName,-consumptionTime,-selectionTime,-collectionId,-collectionName)
 Traqq
