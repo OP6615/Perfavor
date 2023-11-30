@@ -81,3 +81,7 @@ differences
 threshold <- 5  # can change
 difference_ratio <- sum(differences > threshold) / length(differences)
 difference_ratio
+
+# Return the missing data obtained by knn to the Traqq file to get a new TraqqNew file
+imputed_selected <- imputed_data %>% select(4, 146:179)
+TraqqNew <- left_join(Traqq, imputed_selected, by = c("nevoCode" = "NEVO.code"))
