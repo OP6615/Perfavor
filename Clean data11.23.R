@@ -4,8 +4,9 @@ library(dplyr)
 library(VIM)
 
 #Import the data txt named TraqqRaw, NEVO, SVT
-NEVO <- read.csv("https://raw.githubusercontent.com/OP6615/Perfavor/main/NEVO.csv")
-SVT <- read.csv("https://raw.githubusercontent.com/OP6615/Perfavor/main/SVT.csv")
+SVT <- read.csv("D:/desktop/thesis/Data analysis/clean data/csv/SVT.csv", header = TRUE, sep = ",", stringsAsFactors = FALSE)
+NEVO<- read.csv("D:/desktop/thesis/Data analysis/clean data/csv/NEVO.csv", header = TRUE, sep = ",", stringsAsFactors = FALSE)
+TraqqRaw<- read.csv("D:/desktop/thesis/Data analysis/clean data/csv/TraqqRaw.csv", header = TRUE, sep = ",", stringsAsFactors = FALSE)
 
 #clean the not used columns of the raw data from traqq
 Traqq <- select(TraqqRaw, -participantId,-invitationId,-invitationNotes,-startTime,-endTime,-openingTime,-closingTime,-responseCount,-responseId,-sendTime,-receiveTime,-manualSend,-deviceInfo,-appVersion,-timeZone,-ipHash,-consumptionCount,-consumptionId,-productId,-momentId,-momentName,-consumptionTime,-selectionTime,-collectionId,-collectionName)
@@ -38,8 +39,12 @@ NEVOSVT_miss <- NEVOSVT[!(is.na(NEVOSVT$m_sweet) & !(NEVOSVT$NEVO.code %in% uniq
 scaled_miss <- NEVOSVT_miss
 str(scaled_miss[, 12:32])
 
-# Select the columns to be standardised
-columns_to_normalize <- c(12:17, 19:23, 27:32)
+# Select the columns to be standardised 
+  #!!(can say more in thesis about why choose these nutrient values-> which one contributes to the taste of food)
+  #the selected columns contains all the energy values
+columns_to_normalize <- c(12:144)
+scaled_miss[, 12:144] <- lapply(scaled_miss[, 12:144], function(x) as.numeric(x))
+str(scaled_miss[, columns_to_normalize])
 
 # Normalisation using the scale function
 scaled_miss[, columns_to_normalize] <- scale(scaled_miss[, columns_to_normalize])
@@ -50,7 +55,7 @@ scaled_miss
 var_cols <- colnames(scaled_miss)[156:179]
 
 # Extract the names of the columns to be interpolated 
-dist_cols <- colnames(scaled_miss)[c(12:32, 156:179)]
+dist_cols <- colnames(scaled_miss)[c(12:144, 156:179)]
 
 # Group by Food.group column(column 3) and apply kNN interpolation
 imputed_data <- scaled_miss %>%
@@ -82,5 +87,5 @@ difference_ratio <- sum(differences > threshold) / length(differences)
 difference_ratio
 
 # Return the missing data obtained by knn to the Traqq file to get a new TraqqNew file
-imputed_selected <- imputed_data %>% select(4, 146:179)
+imputed_selected <- imputed_data %>% select(4, 156:179)
 TraqqNew <- left_join(Traqq, imputed_selected, by = c("nevoCode" = "NEVO.code"))
